@@ -1,0 +1,30 @@
+{
+  "name": "fabric-sample",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c cyan,magenta \"npm run dev -w server\" \"npm run dev -w client\"",
+    "build": "npm run build -w server && npm run build -w client",
+    "start": "npm run start -w server",
+    "db:generate": "npm run db:generate -w server",
+    "db:push": "npm run db:push -w server",
+    "db:local": "node scripts/local-db.mjs",
+    "test": "npm run test -w server",
+    "test:integration": "node scripts/integration.mjs",
+    "test:ui": "node scripts/ui-test.mjs",
+    "seed:demo": "node scripts/seed-demo.mjs",
+    "format": "prettier --write client/src server/src scripts README.md",
+    "reindex:texture": "node scripts/reindex-texture.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "concurrently": "^9.2.1",
+    "embedded-postgres": "18.4.0-beta.17",
+    "prettier": "^3.9.10"
+  },
+  "license": "GPL-3.0-only"
+}

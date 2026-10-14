@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+server/data/
+.local-postgres/
+*.log
+.DS_Store
+coverage/
+.gitee-token
+*.tsbuildinfo
+output/

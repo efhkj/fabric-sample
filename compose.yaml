@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: fabric_sample
+      POSTGRES_USER: fabric
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in the root .env file}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fabric -d fabric_sample"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  app:
+    build: .
+    ports:
+      - "127.0.0.1:3001:3001"
+    environment:
+      DATABASE_URL: postgresql://fabric:${POSTGRES_PASSWORD:?Please set POSTGRES_PASSWORD in the root .env file}@db:5432/fabric_sample?schema=public
+      HOST: 0.0.0.0
+      PORT: 3001
+      STORAGE_DIR: /app/server/data/uploads
+      SEARCH_MODE: ${SEARCH_MODE:-baidu}
+      BAIDU_AUTH_MODE: ${BAIDU_AUTH_MODE:-oauth}
+      BAIDU_ACCESS_KEY_ID: ${BAIDU_ACCESS_KEY_ID:-}
+      BAIDU_ACCESS_KEY_SECRET: ${BAIDU_ACCESS_KEY_SECRET:-}
+      BAIDU_API_KEY: ${BAIDU_API_KEY:-}
+      BAIDU_SECRET_KEY: ${BAIDU_SECRET_KEY:-}
+      BAIDU_SEARCH_TYPE: ${BAIDU_SEARCH_TYPE:-materiel}
+    volumes:
+      - uploads:/app/server/data/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  postgres_data:
+  uploads:

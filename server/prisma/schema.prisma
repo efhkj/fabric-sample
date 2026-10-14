@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+model Sample {
+  id String @id @default(uuid())
+  code String @unique
+  name String
+  attributes Json @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  images SampleImage[]
+}
+model SampleImage {
+  id String @id @default(uuid())
+  sampleId String
+  sample Sample @relation(fields: [sampleId], references: [id])
+  path String
+  thumbnailPath String
+  searchImagePath String?
+  indexProfile String?
+  hash String @unique
+  descriptor Json
+  contSign String?
+  indexMode String?
+  indexStatus String @default("pending")
+  lastError String?
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  @@index([sampleId])
+  @@index([indexStatus])
+}
+model CustomField {
+  id String @id @default(uuid())
+  key String @unique
+  label String
+  type String
+  required Boolean @default(false)
+  showInResults Boolean @default(true)
+  options Json @default("[]")
+  sortOrder Int @default(0)
+  createdAt DateTime @default(now())
+}
